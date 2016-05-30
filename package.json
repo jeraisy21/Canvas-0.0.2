@@ -1,0 +1,9 @@
+{
+   "name": "Canvas",
+   "description": "Collaborative drawing canvas",
+   "author": "Jeraisy Aquino",
+   "dependencies" : {
+      "express": "4.x",
+      "socket.io": "*"
+   }
+}
