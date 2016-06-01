@@ -20,10 +20,25 @@ document.addEventListener("DOMContentLoaded", function() {
    canvas.width = window.innerWidth;
    canvas.height = window.innerHeight;
 
-   //reload for resizing the
-   window.onresize = function() {
-      location.reload();
-   }
+   /* Not compatible with FireFox
+   reload for resizing the page
+   $(document).ready(function() {
+      $(window).resize(function(){
+         location.reload('canvas');
+      });
+   }); */
+
+   //refresh page on browser resize
+   $(window).bind('resize', function(e)
+   {
+      if (window.RT) clearTimeout(window.RT);
+      window.RT = setTimeout(function()
+      {
+         this.location.reload('canvas', false); /* false to get page cache.*/
+      }, 200);
+    });
+
+   
 
       // register mouse event handlers
    canvas.onmousedown = function(e){ mouse.click = true; };
