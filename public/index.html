@@ -3,20 +3,14 @@
    <head>
       <title>Whiteboard</title>
       <meta charset="utf-8">
+
       <link rel="stylesheet" href="style.css" />
       <script src="socket.io/socket.io.js"></script>
       
    </head>
    <body>
-      <div id = "toolbar">
-         <div id = "rad">
-            Radius <span id = "radval">10</span>
-            <div id="decrad" class="radcontrol">-</div>
-            <div id="incrad" class="radcontrol">+</div>
-         </div>
-      </div>
-      <canvas id="drawing"></canvas>
+      <canvas id="drawing" width="200" height="200"></canvas>
       <script src="client.js"></script>
-      <script src="radius.js"></script>
+
       </body>
 </html>

@@ -11,21 +11,21 @@ document.addEventListener("DOMContentLoaded", function() {
    var width   = window.innerWidth;
    var height  = window.innerHeight;
    var socket  = io.connect();
-   
+
+
+   var radius = 10;
+   context.lineWidth = 5;
 
    // set canvas to full browser width/height
-   canvas.width = width;
-   canvas.height = height;
+   canvas.width = window.innerWidth;
+   canvas.height = window.innerHeight;
 
-   //resizing problem 
-   window.onresize = function(){
-      var image = context.getImageData(0,0,canvas.width, canvas.height);
-      canvas.width = width;
-      canvas.height = height;
-      context.putImageData(image, 0,0);
+   //reload for resizing the
+   window.onresize = function() {
+      location.reload();
    }
 
-   // register mouse event handlers
+      // register mouse event handlers
    canvas.onmousedown = function(e){ mouse.click = true; };
    canvas.onmouseup = function(e){ mouse.click = false; };
 
@@ -37,12 +37,14 @@ document.addEventListener("DOMContentLoaded", function() {
    };
 
    // draw line received from server
-	socket.on('draw_line', function (data) {
+   socket.on('draw_line', function (data) {
       var line = data.line;
       context.beginPath();
       context.moveTo(line[0].x * width, line[0].y * height);
       context.lineTo(line[1].x * width, line[1].y * height);
       context.stroke();
+      context.arc(data.clientX, data.clientY, radius, 0, Math.PI*2); 
+      context.lineWidth = '5';
    });
    
    // main loop, running every 25ms
@@ -58,3 +60,4 @@ document.addEventListener("DOMContentLoaded", function() {
    }
    mainLoop();
 });
+
