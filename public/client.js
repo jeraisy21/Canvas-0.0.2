@@ -20,24 +20,6 @@ document.addEventListener("DOMContentLoaded", function() {
    canvas.width = window.innerWidth;
    canvas.height = window.innerHeight;
 
-   /* Not compatible with FireFox
-   reload for resizing the page
-   $(document).ready(function() {
-      $(window).resize(function(){
-         location.reload('canvas');
-      });
-   }); */
-
-   //refresh page on browser resize
-   $(window).bind('resize', function(e)
-   {
-      if (window.RT) clearTimeout(window.RT);
-      window.RT = setTimeout(function()
-      {
-         this.location.reload('canvas', false); /* false to get page cache.*/
-      }, 200);
-    });
-
    
 
       // register mouse event handlers
@@ -52,7 +34,8 @@ document.addEventListener("DOMContentLoaded", function() {
    };
 
    // draw line received from server
-   socket.on('draw_line', function (data) {
+
+      var redraw = socket.on('draw_line', function (data) {
       var line = data.line;
       context.beginPath();
       context.moveTo(line[0].x * width, line[0].y * height);
@@ -75,4 +58,20 @@ document.addEventListener("DOMContentLoaded", function() {
    }
    mainLoop();
 });
+      
+
+ var resizeStart = _.debounce(function() {
+   var canvas  = document.getElementById('drawing');
+   var width = canvas.width;
+   var height = canvas.height;
+    if (width < height) {
+      return redraw();
+
+    }
+
+   }, 200);
+
+
+   window.addEventListener('resize', resizeStart);
+
 
