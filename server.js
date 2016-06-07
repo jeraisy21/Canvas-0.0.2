@@ -2,6 +2,7 @@ var express = require('express'),
     app = express(),
     http = require('http'),
     socketIo = require('socket.io');
+    
 
 // start webserver on port 3000
 var server =  http.createServer(app);
@@ -21,12 +22,19 @@ io.on('connection', function (socket) {
    for (var i in line_history) {
       socket.emit('draw_line', { line: line_history[i] } );
    }
-
+      
    // add handler for message type "draw_line".
    socket.on('draw_line', function (data) {
       // add received line to history 
       line_history.push(data.line);
       // send line to all clients
       io.emit('draw_line', { line: data.line });
+   
+  
    });
 });
+
+
+   for (var i in line_history) {
+      socket.emit('get-line-history', { line: line_history[i] } );
+   }

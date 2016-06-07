@@ -1,3 +1,6 @@
+var canvas;
+var context;
+var socket;
 document.addEventListener("DOMContentLoaded", function() {
    var mouse = { 
       click: false,
@@ -6,11 +9,11 @@ document.addEventListener("DOMContentLoaded", function() {
       pos_prev: false
    };
    // get canvas element and create context
-   var canvas  = document.getElementById('drawing');
-   var context = canvas.getContext('2d');
+   canvas  = document.getElementById('drawing');
+   context = canvas.getContext('2d');
    var width   = window.innerWidth;
    var height  = window.innerHeight;
-   var socket  = io.connect();
+   socket  = io.connect();
 
 
    var radius = 10;
@@ -35,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
    // draw line received from server
 
-      var redraw = socket.on('draw_line', function (data) {
+      socket.on('draw_line', function (data) {
       var line = data.line;
       context.beginPath();
       context.moveTo(line[0].x * width, line[0].y * height);
@@ -58,16 +61,24 @@ document.addEventListener("DOMContentLoaded", function() {
    }
    mainLoop();
 });
-      
+
+
+
+
+
 
  var resizeStart = _.debounce(function() {
-   var canvas  = document.getElementById('drawing');
-   var width = canvas.width;
-   var height = canvas.height;
-    if (width < height) {
-      return redraw();
 
-    }
+   context.save();
+    // Use the identity matrix while clearing the canvas
+   context.setTransform(1, 0, 0, 1, 0, 0);
+   context.clearRect(0, 0, canvas.width, canvas.height);
+    // Restore the transform
+   context.restore();
+    // clear drawing history count
+   draw_line_count = 0;
+   
+   socket.emit('get-line-history', canvas)
 
    }, 200);
 
@@ -75,3 +86,4 @@ document.addEventListener("DOMContentLoaded", function() {
    window.addEventListener('resize', resizeStart);
 
 
+   
